@@ -1,0 +1,33 @@
+services:
+  api:
+    build: .
+    image: enterprise-knowledge-assistant:latest
+    ports:
+      - "8000:8000"
+    environment:
+      # Demo profile by default; override here for production.
+      LOG_JSON: "true"
+      REQUIRE_AUTH: "true"
+      API_KEYS: "dev-local-key"
+      LLM_FORCE_STUB: "true"
+      EMBEDDING_PROVIDER: "hash"
+      VECTOR_BACKEND: "memory"
+      RERANK_PROVIDER: "heuristic"
+      DATA_DIR: "/app/data"
+      # ---- To use a local Ollama running on the host, uncomment: ----
+      # LLM_FORCE_STUB: "false"
+      # LLM_BASE_URL: "http://host.docker.internal:11434/v1"
+      # LLM_MODEL: "qwen3-coder:30b"
+      # EMBEDDING_PROVIDER: "openai_compatible"
+      # EMBEDDING_BASE_URL: "http://host.docker.internal:11434/v1"
+      # EMBEDDING_MODEL: "nomic-embed-text"
+      # EMBEDDING_DIM: "768"
+    volumes:
+      - eka_data:/app/data
+    # extra_hosts lets the container reach a host-run Ollama on Linux.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  eka_data:

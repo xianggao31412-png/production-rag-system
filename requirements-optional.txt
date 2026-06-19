@@ -1,0 +1,9 @@
+# Optional production backends. Install only what you need — the app runs
+# without any of these by falling back to the built-in local components.
+#
+#   pip install -r requirements-optional.txt
+#
+# ChromaDB: persistent vector store (set VECTOR_BACKEND=chroma)
+chromadb>=0.5.0
+# sentence-transformers: cross-encoder reranker (set RERANK_PROVIDER=cross_encoder)
+sentence-transformers>=3.0.0
