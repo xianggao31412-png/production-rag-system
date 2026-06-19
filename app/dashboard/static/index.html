@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Knowledge Assistant · Operations Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/dashboard/static/styles.css" />
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">EKA</span>
+      <h1>Knowledge Assistant</h1>
+      <span class="sub">ops console</span>
+    </div>
+    <span class="spacer"></span>
+
+    <div class="control">
+      <label for="ns">Namespace</label>
+      <select id="ns"><option value="">all</option></select>
+    </div>
+    <div class="control">
+      <label for="apikey">API key</label>
+      <input id="apikey" class="key" type="password" placeholder="X-API-Key" autocomplete="off" />
+    </div>
+    <span class="live" id="live"><span class="dot"></span><span id="liveLabel">connecting</span></span>
+  </div>
+
+  <div class="wrap">
+
+    <!-- SIGNATURE: the live retrieval pipeline -->
+    <section>
+      <p class="eyebrow">retrieval pipeline</p>
+      <div class="spine-card">
+        <div class="spine" id="spine">
+          <div class="stage" data-sig="embed" data-key="embed_ms">
+            <div class="node" title="Embed the query into a vector">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+            </div>
+            <div class="label">Embed</div><div class="ms" data-ms>—</div>
+          </div>
+          <div class="stage" data-sig="vector" data-key="vector_search_ms">
+            <div class="node" title="Semantic nearest-neighbour search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <div class="label">Vector</div><div class="ms" data-ms>—</div>
+          </div>
+          <div class="stage" data-sig="lexical" data-key="keyword_search_ms">
+            <div class="node" title="BM25 lexical keyword search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+            </div>
+            <div class="label">BM25</div><div class="ms" data-ms>—</div>
+          </div>
+          <div class="stage" data-sig="fusion" data-key="fusion_ms">
+            <div class="node" title="Reciprocal-rank fusion of both signals">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 4v6a5 5 0 005 5 5 5 0 005-5V4"/><path d="M12 15v5"/></svg>
+            </div>
+            <div class="label">Fuse</div><div class="ms" data-ms>—</div>
+          </div>
+          <div class="stage" data-sig="rerank" data-key="rerank_ms">
+            <div class="node" title="Rerank candidates by relevance">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 16l5-5 5 5M8 11V4"/><path d="M21 8l-5 5-3-3"/></svg>
+            </div>
+            <div class="label">Rerank</div><div class="ms" data-ms>—</div>
+          </div>
+          <div class="stage" data-sig="generate" data-key="generation_ms">
+            <div class="node" title="Compose a grounded, cited answer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.1 4.9L19 9l-4 3 1 5-4-2.7L8 17l1-5-4-3 4.9-1.1z"/></svg>
+            </div>
+            <div class="label">Generate</div><div class="ms" data-ms>—</div>
+          </div>
+        </div>
+        <div class="spine-foot">
+          <span class="total">end-to-end <b id="totalMs">—</b></span>
+          <span class="hint" id="spineHint">run a query below to trace the pipeline</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- metric strip -->
+    <section>
+      <p class="eyebrow">system at a glance</p>
+      <div class="metrics">
+        <div class="metric accent-v"><div class="k">Documents</div><div class="v" id="mDocs">—</div></div>
+        <div class="metric"><div class="k">Chunks</div><div class="v" id="mChunks">—</div></div>
+        <div class="metric"><div class="k">Queries</div><div class="v" id="mQueries">—</div></div>
+        <div class="metric accent-g"><div class="k">Success</div><div class="v"><span id="mSuccess">—</span><span class="u">%</span></div></div>
+        <div class="metric accent-g"><div class="k">Grounded</div><div class="v"><span id="mGrounded">—</span><span class="u">%</span></div></div>
+        <div class="metric accent-a"><div class="k">p95 latency</div><div class="v"><span id="mP95">—</span><span class="u">ms</span></div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="cols">
+        <!-- left: namespaces + config -->
+        <div class="panel">
+          <header>Namespaces <span class="meta" id="cfgMeta">—</span></header>
+          <div class="body">
+            <table>
+              <thead><tr><th>Namespace</th><th class="num">Docs</th><th class="num">Chunks</th></tr></thead>
+              <tbody id="nsBody"><tr><td colspan="3" class="empty">loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- right: live probe -->
+        <div class="panel ask">
+          <header>Ask the knowledge base <span class="meta" id="probeModel">—</span></header>
+          <div class="body">
+            <textarea id="q" placeholder="e.g. How many vacation days do employees get?"></textarea>
+            <div class="ask-row">
+              <select id="style" class="grow" style="font-family:var(--mono);font-size:12px;background:var(--bg);color:var(--ink);border:1px solid var(--rule);border-radius:7px;padding:8px 9px;">
+                <option value="detailed">detailed</option>
+                <option value="concise">concise</option>
+                <option value="bullet">bullet</option>
+              </select>
+              <label class="toggle"><input type="checkbox" id="tHybrid" checked /> hybrid</label>
+              <label class="toggle"><input type="checkbox" id="tRerank" checked /> rerank</label>
+              <button class="run" id="runBtn">Run query</button>
+            </div>
+
+            <div class="answer" id="answer">
+              <span class="grounded-tag" id="groundedTag"></span>
+              <div class="text" id="answerText"></div>
+              <div class="warn-line" id="warnLine"></div>
+              <div class="cites" id="cites"></div>
+              <div class="scorebars" id="scorebars"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- recent queries -->
+    <section>
+      <p class="eyebrow">recent queries</p>
+      <div class="panel">
+        <div class="body" style="padding:0">
+          <table>
+            <thead><tr>
+              <th>Time</th><th>Namespace</th><th>Question</th>
+              <th>Grounded</th><th class="num">Cites</th><th class="num">Latency</th>
+            </tr></thead>
+            <tbody id="qBody"><tr><td colspan="6" class="empty">no queries yet — ask something above</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span id="footLeft">Enterprise Knowledge Assistant</span>
+      <span>hybrid retrieval · reranking · grounded citations</span>
+    </footer>
+  </div>
+
+  <script src="/dashboard/static/app.js"></script>
+</body>
+</html>
