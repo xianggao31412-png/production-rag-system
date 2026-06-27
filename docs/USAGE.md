@@ -49,7 +49,7 @@ MD / CSV / PDF file.
 
 ```bash
 curl -X POST "http://localhost:8000/v1/documents?namespace=demo" \
-  -H "X-API-Key: dev-local-key" -F "file=@examples/product_faq.md"
+  -H "X-API-Key: dev-local-key" -F "file=@demo/examples/product_faq.md"
 ```
 
 **Seed the bundled examples in one go:**

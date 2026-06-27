@@ -80,7 +80,7 @@ embedded, and indexed into both the vector store and BM25.
 ```bash
 curl -X POST "http://localhost:8000/v1/documents?namespace=demo" \
   -H "X-API-Key: dev-local-key" \
-  -F "file=@examples/company_policy.txt"
+  -F "file=@demo/examples/company_policy.txt"
 ```
 
 `201 Created`:

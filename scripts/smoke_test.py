@@ -23,7 +23,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from app.config import Settings  # noqa: E402
 from app.main import create_app  # noqa: E402
 
-EXAMPLES = ROOT / "examples"
+EXAMPLES = ROOT / "demo" / "examples"
 QUESTIONS = [
     ("How many vacation days do full-time employees get?", "company_policy.txt"),
     ("How do I reset my password?", "product_faq.md"),
