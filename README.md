@@ -54,6 +54,21 @@ and Docker packaging.
 
 ## Quickstart
 
+### Easiest — one-click on Windows
+
+1. **Run the app:** double-click **`START_SOFTWARE.bat`**. It creates the virtual
+   environment, installs dependencies, generates `.env`, creates the
+   `data/ logs/ output/` folders, starts the server, and opens the
+   dashboard at `http://127.0.0.1:8000/dashboard`. (No admin rights, paths with
+   spaces are fine, and it never deletes your files.)
+2. **See every feature:** in the dashboard click **Run showcase demo** — it loads
+   the bundled showcase document and runs a guided set of questions so the whole
+   pipeline lights up. Or double-click **`RUN_DEMO.bat`** for a narrated
+   command-line tour (works offline, no server needed).
+
+> **中文 · 最简单的方式**:双击 **`START_SOFTWARE.bat`** 自动装好并启动、打开仪表盘;在仪表盘点
+> **Run showcase demo** 就能看到全部功能演示。或双击 **`RUN_DEMO.bat`** 看命令行版演示(离线即可)。
+
 ### Option A — offline demo (zero dependencies beyond pip)
 
 ```bash
@@ -113,7 +128,7 @@ KEY=dev-local-key
 
 # ingest
 curl -s -X POST "http://localhost:8000/v1/documents?namespace=demo" \
-  -H "X-API-Key: $KEY" -F "file=@examples/company_policy.txt"
+  -H "X-API-Key: $KEY" -F "file=@demo/examples/company_policy.txt"
 
 # ask
 curl -s -X POST "http://localhost:8000/v1/query" \
@@ -151,9 +166,13 @@ enterprise-knowledge-assistant/
 │   ├── container.py         # dependency wiring
 │   └── main.py              # app factory + lifespan
 ├── tests/                   # ~40 unit + integration tests
-├── examples/                # demo corpus (policy, FAQ, employees)
+├── demo/                    # all demonstration & example files (kept separate from app code)
+│   ├── showcase/            #   AI_SOFTWARE_SHOWCASE_FILE.md (the guided-demo document)
+│   └── examples/            #   sample corpus: policy (TXT), FAQ (MD), employees (CSV)
 ├── scripts/                 # smoke_test.py, seed_examples.py
 ├── docs/                    # USAGE, ARCHITECTURE, API, CONFIGURATION, DEPLOYMENT, DEVELOPMENT_LOOP
+├── START_SOFTWARE.bat       # Windows one-click: setup + run + open dashboard
+├── RUN_DEMO.bat / run_demo.py  # one-click / CLI guided feature demo
 ├── Dockerfile, docker-compose.yml, Makefile, run.sh, run.bat
 └── requirements.txt, requirements-optional.txt, .env.example
 ```

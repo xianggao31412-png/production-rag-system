@@ -20,6 +20,9 @@ test: ## Run the test suite
 smoke: ## End-to-end smoke test (boots app in-process, ingests, queries)
 	$(PY) scripts/smoke_test.py
 
+demo: ## Run the guided showcase demo (offline, narrated)
+	$(PY) run_demo.py
+
 seed: ## Ingest the bundled example documents into a running instance
 	$(PY) scripts/seed_examples.py
 
@@ -32,4 +35,4 @@ docker-up: ## Start with docker compose
 clean: ## Remove caches and runtime data
 	rm -rf .pytest_cache __pycache__ */__pycache__ */*/__pycache__ data
 
-.PHONY: help install install-optional run test smoke seed docker-build docker-up clean
+.PHONY: help install install-optional run test smoke demo seed docker-build docker-up clean
